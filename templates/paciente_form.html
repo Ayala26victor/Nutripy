@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar Paciente' if paciente else 'Nuevo Paciente' }}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">{{ 'Editar Paciente' if paciente else 'Nuevo Paciente' }}</h5>
+  </div>
+  <div class="card-body">
+    <form method="post">
+      <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input name="nombre" class="form-control" required value="{{ paciente.nombre if paciente else '' }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Cédula</label>
+        <input name="cedula" class="form-control" value="{{ paciente.cedula if paciente else '' }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Teléfono</label>
+        <input name="telefono" class="form-control" value="{{ paciente.telefono if paciente else '' }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Edad</label>
+        <input name="edad" type="number" min="0" class="form-control" value="{{ paciente.edad if paciente else '' }}">
+      </div>
+
+      <!-- ✅ Campo Sexo -->
+      <div class="mb-3">
+        <label class="form-label">Sexo</label>
+        <select name="sexo" class="form-select" required>
+          <option value="">Seleccionar...</option>
+          <option value="M" {% if paciente and paciente.sexo == 'M' %}selected{% endif %}>Masculino</option>
+          <option value="F" {% if paciente and paciente.sexo == 'F' %}selected{% endif %}>Femenino</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Notas</label>
+        <textarea name="notas" class="form-control" rows="3">{{ paciente.notas if paciente else '' }}</textarea>
+      </div>
+
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <button type="submit" class="btn btn-success btn-sm w-25">
+          🖫 Guardar
+        </button>
+        <button type="button" onclick="window.location='{{ url_for('pacientes_listado') }}'" class="btn btn-secondary btn-sm w-25">
+          ✖ Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

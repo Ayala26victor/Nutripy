@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card mt-4">
+  <div class="card-header text-center">
+    <h4 class="mb-0">Editar Doctor</h4>
+  </div>
+
+  <div class="card-body">
+    <form method="POST">
+      <!-- Nombre -->
+      <div class="form-group mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          class="form-control"
+          value="{{ doctor.nombre }}"
+          placeholder="Ej: Juan Pérez"
+          autocomplete="name"
+          required
+        >
+      </div>
+
+      <!-- Cédula -->
+      <div class="form-group mb-3">
+        <label for="cedula" class="form-label">Cédula</label>
+        <input
+          type="text"
+          id="cedula"
+          name="cedula"
+          class="form-control"
+          value="{{ doctor.cedula }}"
+          placeholder="Ej: 1234567"
+          inputmode="numeric"
+          maxlength="15"
+          autocomplete="off"
+          required
+        >
+      </div>
+
+      <!-- Especialidad -->
+      <div class="form-group mb-3">
+        <label for="especialidad" class="form-label">Especialidad</label>
+        <input
+          type="text"
+          id="especialidad"
+          name="especialidad"
+          class="form-control"
+          value="{{ doctor.especialidad }}"
+          placeholder="Ej: Cardiología"
+          autocomplete="off"
+          required
+        >
+      </div>
+
+      <!-- Teléfono -->
+      <div class="form-group mb-3">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <input
+          type="text"
+          id="telefono"
+          name="telefono"
+          class="form-control"
+          value="{{ doctor.telefono }}"
+          placeholder="Ej: 0981 123 456"
+          inputmode="tel"
+          maxlength="20"
+          autocomplete="tel"
+          required
+        >
+      </div>
+
+      <!-- Turno -->
+      <div class="form-group mb-3">
+        <label for="turno" class="form-label">Turno</label>
+        <input
+          type="text"
+          id="turno"
+          name="turno"
+          class="form-control"
+          value="{{ doctor.turno }}"
+          placeholder="Ej: Mañana, Tarde, Noche"
+          autocomplete="off"
+          required
+        >
+      </div>
+
+      <!-- Botones -->
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <!-- Botón Guardar -->
+        <button type="submit" class="btn btn-success d-flex align-items-center gap-1 px-3">
+          <i class="bi bi-save"></i> 🖫 Guardar
+        </button>
+
+        <!-- Botón Cancelar -->
+        <button
+          type="button"
+          onclick='window.location="{{ url_for("doctores_listado") }}"'
+          class="btn btn-secondary d-flex align-items-center gap-1 px-3"
+        >
+          <i class="bi bi-x-lg"></i> ✖ Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+

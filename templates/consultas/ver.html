@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Detalle de Consulta{% endblock %}
+
+{% block content %}
+<div class="card mt-4">
+  <div class="card-header text-center bg-dark text-white">
+    <h4 class="mb-0">Detalle de la consulta</h4>
+  </div>
+
+  <div class="card-body">
+    <ul class="list-group">
+      <li class="list-group-item"><strong>Paciente:</strong> {{ consulta.paciente_nombre }}</li>
+      <li class="list-group-item"><strong>Edad:</strong> {{ consulta.edad or '-' }}</li>
+      <li class="list-group-item"><strong>Sexo:</strong> {{ 'Masculino' if consulta.sexo == 'M' else 'Femenino' }}</li>
+      <li class="list-group-item"><strong>Doctor:</strong> {{ consulta.doctor_nombre }}</li>
+      <li class="list-group-item"><strong>Turno:</strong> {{ consulta.turno or '-' }}</li>
+      <li class="list-group-item"><strong>Modalidad:</strong> {{ consulta.modalidad or '-' }}</li>
+      <li class="list-group-item"><strong>Fecha:</strong> {{ consulta.fecha.strftime('%d/%m/%Y') }}</li>
+      <li class="list-group-item"><strong>Hora:</strong> {{ consulta.hora.strftime('%H:%M') }}</li>
+      <li class="list-group-item"><strong>Motivo:</strong> {{ consulta.motivo or '-' }}</li>
+    </ul>
+
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <a href="{{ url_for('consultas_listado') }}" class="btn btn-secondary btn-sm">⬅ Volver</a>
+    </div>
+
+    <!-- Menú de exportación -->
+    <div class="dropdown mt-4 text-center">
+      <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-download"></i> Exportar consulta
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="{{ url_for('exportar_consulta_pdf', id=consulta.id) }}"><i class="bi bi-file-earmark-pdf text-danger"></i> PDF</a></li>
+        <li><a class="dropdown-item" href="{{ url_for('exportar_consulta_excel', id=consulta.id) }}"><i class="bi bi-file-earmark-excel text-success"></i> Excel</a></li>
+        <li><a class="dropdown-item" href="{{ url_for('exportar_consulta_csv', id=consulta.id) }}"><i class="bi bi-file-earmark-text text-info"></i> CSV</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

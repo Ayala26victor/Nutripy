@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Registrar Consulta - Nutripy{% endblock %}
+
+{% block content %}
+<div class="formulario-consulta">
+  <h2 class="titulo-login">Registrar Consulta</h2>
+
+  <p><strong>Paciente:</strong> {{ paciente.nombre }}</p>
+
+  <form method="POST" action="">
+    <label>Resumen de la consulta:</label>
+    <textarea name="resumen" required placeholder="Ej. Consulta agendada, revisión de dieta..."></textarea>
+
+    <label>Firma del Paciente:</label>
+    <div class="firma-box">
+      <canvas id="canvas" width="300" height="150"></canvas>
+    </div>
+    <input type="hidden" name="firma_img" id="firma_img">
+
+    <div class="botones-firma">
+      <button type="button" class="btn-nutripy" onclick="borrarFirma()">Borrar Firma</button>
+      <button type="submit" class="btn-nutripy" onclick="return validarFirma()">Guardar Consulta</button>
+      <button type="button" class="btn-nutripy" onclick="window.print()">Imprimir</button>
+    </div>
+  </form>
+</div>
+
+
+<script>
+// Tu script de firma permanece igual
+window.onload = function() {
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let dibujando = false;
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+    }
+
+    function getTouchPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        return {
+            x: touch.clientX - rect.left,
+            y: touch.clientY - rect.top
+        };
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+        dibujando = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    });
+
+    canvas.addEventListener('mouseup', () => dibujando = false);
+    canvas.addEventListener('mouseout', () => dibujando = false);
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (!dibujando) return;
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    });
+
+    canvas.addEventListener('touchstart', (e) => {
+        dibujando = true;
+        const pos = getTouchPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    });
+
+    canvas.addEventListener('touchend', () => dibujando = false);
+    canvas.addEventListener('touchcancel', () => dibujando = false);
+
+    canvas.addEventListener('touchmove', (e) => {
+        if (!dibujando) return;
+        const pos = getTouchPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        e.preventDefault();
+    });
+};
+
+function borrarFirma() {
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function validarFirma() {
+    const canvas = document.getElementById('canvas');
+    const firma = canvas.toDataURL();
+    const vacio = firma === canvas.toDataURL("image/png", 0.0);
+
+    if (vacio) {
+        alert("Por favor, firme antes de guardar.");
+        return false;
+    }
+
+    document.getElementById('firma_img').value = firma;
+    return true;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Recetarios y Planes Nutricionales{% endblock %}
+
+{% block content %}
+<h2>Recetarios y Planes Nutricionales</h2>
+
+<!-- Formulario de subida -->
+<form method="POST" enctype="multipart/form-data" class="mb-4">
+  <div class="mb-3">
+    <label for="titulo" class="form-label">Título:</label>
+    <input type="text" name="titulo" id="titulo" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="descripcion" class="form-label">Descripción:</label>
+    <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label for="archivo" class="form-label">Archivo:</label>
+    <input type="file" name="archivo" id="archivo" class="form-control" required>
+  </div>
+
+  <button type="submit" class="btn btn-success">Subir</button>
+</form>
+
+<!-- Listado de recetarios -->
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Título</th>
+      <th>Descripción</th>
+      <th>Fecha</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for recetario in recetarios %}
+    <tr>
+      <td>{{ recetario.titulo }}</td>
+      <td>{{ recetario.descripcion }}</td>
+      <td>{{ recetario.fecha_subida.strftime('%d/%m/%Y') }}</td>
+      <td>
+        <a href="{{ url_for('descargar_recetario', id=recetario.id) }}" class="btn btn-primary btn-sm">Descargar</a>
+        <!-- Usamos un formulario POST para eliminar -->
+        <form action="{{ url_for('eliminar_recetario', id=recetario.id) }}" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

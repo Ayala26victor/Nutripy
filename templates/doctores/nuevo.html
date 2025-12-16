@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Nuevo Doctor{% endblock %}
+
+{% block content %}
+<div class="card mt-4">
+  <div class="card-header text-center bg-dark text-white">
+    <h4 class="mb-0">Registrar nuevo doctor</h4>
+  </div>
+
+  <div class="card-body">
+    <form method="POST">
+      <!-- Nombre -->
+      <div class="form-group mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
+      </div>
+
+      <!-- Cédula -->
+      <div class="form-group mb-3">
+        <label for="cedula" class="form-label">Cédula</label>
+        <input type="text" id="cedula" name="cedula" class="form-control" placeholder="Ej: 1234567" required>
+      </div>
+
+      <!-- Especialidad -->
+      <div class="form-group mb-3">
+        <label for="especialidad" class="form-label">Especialidad</label>
+        <input type="text" id="especialidad" name="especialidad" class="form-control" placeholder="Ej: Nutrición" required>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="form-group mb-3">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Ej: 0981 123 456" required>
+      </div>
+
+      <!-- Turno -->
+      <div class="form-group mb-3">
+        <label for="turno" class="form-label">Turno</label>
+        <input type="text" id="turno" name="turno" class="form-control" placeholder="Ej: Mañana, Tarde, Noche" required>
+      </div>
+
+      <!-- Botones -->
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <button type="submit" class="btn btn-success btn-sm w-25">
+          🖫 Guardar
+        </button>
+        <button type="button" onclick="window.location='{{ url_for('doctores_listado') }}'" class="btn btn-secondary btn-sm w-25">
+          ✖ Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

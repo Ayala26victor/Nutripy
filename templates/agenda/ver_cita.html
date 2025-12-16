@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Fondo blanco aplicado solo a esta vista -->
+<div class="bg-white py-4 px-3">
+
+  <!-- Encabezado institucional (se imprime también) -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-0">Nutripy</h3>
+      <p class="mb-0">Clínica de Nutrición</p>
+      <small>Tel: (021) 123-456 | Email: info@nutripy.com</small>
+    </div>
+    <div>
+      <!-- Logo institucional -->
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo Nutripy" height="60">
+    </div>
+  </div>
+  <hr>
+
+  <!-- Título de la ficha -->
+  <div class="text-center mb-4">
+    <h4 class="fw-bold">Detalle de la cita</h4>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <dl class="row">
+        <dt class="col-sm-3">Paciente</dt>
+        <dd class="col-sm-9">{{ cita.paciente.nombre }}</dd>
+
+        <dt class="col-sm-3">Edad</dt>
+        <dd class="col-sm-9">{{ cita.edad if cita.edad else '-' }}</dd>
+
+        <dt class="col-sm-3">Sexo</dt>
+        <dd class="col-sm-9">{{ cita.sexo if cita.sexo else '-' }}</dd>
+
+        <dt class="col-sm-3">Doctor</dt>
+        <dd class="col-sm-9">{{ cita.doctor.nombre }}</dd>
+
+        <dt class="col-sm-3">Fecha</dt>
+        <dd class="col-sm-9">{{ cita.fecha.strftime('%d/%m/%Y') }}</dd>
+
+        <dt class="col-sm-3">Hora</dt>
+        <dd class="col-sm-9">{{ cita.hora.strftime('%H:%M') }}</dd>
+
+        <dt class="col-sm-3">Motivo</dt>
+        <dd class="col-sm-9">{{ cita.motivo or '-' }}</dd>
+
+        <dt class="col-sm-3">Modalidad</dt>
+        <dd class="col-sm-9">{{ cita.modalidad or '-' }}</dd>
+      </dl>
+
+      <!-- Dropdown elegante con íconos y colores (no se imprime) -->
+      <div class="dropdown text-center mt-4 no-print">
+        <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-download"></i> Exportar cita
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a class="dropdown-item" href="{{ url_for('exportar_cita_pdf', id=cita.id) }}">
+              <i class="bi bi-file-earmark-pdf text-danger"></i> PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ url_for('exportar_cita_excel', id=cita.id) }}">
+              <i class="bi bi-file-earmark-excel text-success"></i> Excel
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ url_for('exportar_cita_csv', id=cita.id) }}">
+              <i class="bi bi-file-earmark-text text-info"></i> CSV
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#" onclick="window.print()">
+              <i class="bi bi-printer text-secondary"></i> Imprimir
+             </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
