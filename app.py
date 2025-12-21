@@ -717,44 +717,119 @@ from flask import make_response
 @app.route('/agenda/exportar/pdf/<int:id>')
 @login_required
 def exportar_cita_pdf(id):
-        cita = Agenda.query.get_or_404(id)
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.utils import ImageReader
+    from flask import make_response
+    from io import BytesIO
+    import os
 
-        # Crear un buffer en memoria
-        buffer = BytesIO()
+    cita = Agenda.query.get_or_404(id)  # ✅ corregido
 
-        # Crear el PDF en ese buffer
-        c = canvas.Canvas(buffer)
-        c.setFont("Helvetica", 12)
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+    c.setFont("Helvetica", 12)
 
-        # Encabezado institucional
-        c.drawString(100, 820, "Nutripy - Clínica de Nutrición")
-        c.drawString(100, 805, "Tel: (021) 123-456 | Email: info@nutripy.com")
-        c.line(100, 800, 500, 800)
+    # === Logo Nutripy con borde verde ===
+    logo_path = os.path.join("static", "img", "logo_nutripy.png")  # ✅ corregido
+    if os.path.exists(logo_path):
+        logo = ImageReader(logo_path)
+        c.setStrokeColorRGB(0, 0.6, 0.2)  # Verde institucional
+        c.setLineWidth(1)
+        c.rect(40, height - 120, 100, 100)  # Marco más grande
+        c.drawImage(logo, 42, height - 118, width=96, height=96, mask='auto')
+    else:
+        print(f"Logo no encontrado en: {logo_path}")
 
-        # Detalle de la cita
-        c.drawString(100, 780, f"Paciente: {cita.paciente.nombre}")
-        c.drawString(100, 760, f"Edad: {cita.edad if cita.edad else '-'}")
-        c.drawString(100, 740, f"Sexo: {cita.sexo if cita.sexo else '-'}")
-        c.drawString(100, 720, f"Doctor: {cita.doctor.nombre}")
-        c.drawString(100, 700, f"Turno: {cita.turno or '-'}")
-        c.drawString(100, 680, f"Fecha: {cita.fecha.strftime('%d/%m/%Y')}")
-        c.drawString(100, 660, f"Hora: {cita.hora.strftime('%H:%M')}")
-        c.drawString(100, 640, f"Motivo: {cita.motivo or '-'}")
-        c.drawString(100, 620, f"Modalidad: {cita.modalidad or '-'}")
+    # Encabezado institucional
+    c.drawString(160, height - 60, "Nutripy - Clínica de Nutrición")
+    c.drawString(160, height - 80, "Tel: (021) 123-456 | Email: info@nutripy.com")
+    c.line(40, height - 140, width - 40, height - 140)
 
-        
+    # Título
+    c.setFont("Helvetica-Bold", 14)
+    c.drawCentredString(width / 2, height - 160, "Detalle de la cita")
+    c.setFont("Helvetica", 12)
 
-        c.save()
+    # Datos de la cita
+    y = height - 190
+    c.drawString(60, y, f"Paciente: {cita.paciente.nombre}")
+    y -= 20
+    c.drawString(60, y, f"Edad: {cita.edad}")
+    y -= 20
+    c.drawString(60, y, f"Sexo: {cita.sexo}")
+    y -= 20
+    c.drawString(60, y, f"Doctor: {cita.doctor.nombre}")
+    y -= 20
+    c.drawString(60, y, f"Turno: {cita.turno}")
+    y -= 20
+    c.drawString(60, y, f"Fecha: {cita.fecha.strftime('%d/%m/%Y')}")
+    y -= 20
+    c.drawString(60, y, f"Hora: {cita.hora.strftime('%H:%M')}")
+    y -= 20
+    c.drawString(60, y, f"Motivo: {cita.motivo}")
+    y -= 20
+    c.drawString(60, y, f"Modalidad: {cita.modalidad}")
 
-        # Obtener el contenido del buffer
-        pdf = buffer.getvalue()
-        buffer.close()
+    c.save()
+    pdf = buffer.getvalue()
+    buffer.close()
 
-        # Preparar la respuesta HTTP
-        response = make_response(pdf)
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = f'attachment; filename=cita_{id}.pdf'
-        return response
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=cita_{id}.pdf'
+    return response
+
+@app.route('/consultas/exportar/pdf/<int:id>')
+@login_required
+def exportar_consulta_pdf(id):
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.utils import ImageReader
+    from flask import make_response
+    from io import BytesIO
+    import os
+
+    consulta = Visita.query.get_or_404(id)
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer)
+    c.setFont("Helvetica", 12)
+
+    # === Logo Nutripy ===
+    logo_path = os.path.join(os.getcwd(), "static", "img", "nutripy_logo.png")  # Asegurate que el archivo exista
+    if os.path.exists(logo_path):
+        try:
+            logo = ImageReader(logo_path)
+            c.drawImage(logo, 40, 800, width=50, height=50, mask='auto')  # Ajustado para no superponerse
+        except Exception as e:
+            print(f"⚠️ No se pudo cargar el logo: {e}")
+    else:
+        print(f"⚠️ Logo no encontrado en: {logo_path}")
+
+    # Encabezado institucional
+    c.drawString(100, 820, "Nutripy - Clínica de Nutrición")
+    c.drawString(100, 805, "Tel: (021) 123-456 | Email: info@nutripy.com")
+    c.line(100, 800, 500, 800)
+
+    # Datos de la consulta
+    c.drawString(100, 780, f"Paciente: {consulta.paciente_nombre}")
+    c.drawString(100, 760, f"Edad: {consulta.edad}")
+    c.drawString(100, 740, f"Sexo: {'Masculino' if consulta.sexo == 'M' else 'Femenino'}")
+    c.drawString(100, 720, f"Doctor: {consulta.doctor_nombre}")
+    c.drawString(100, 700, f"Turno: {consulta.turno}")
+    c.drawString(100, 680, f"Modalidad: {consulta.modalidad}")
+    c.drawString(100, 660, f"Fecha: {consulta.fecha.strftime('%d/%m/%Y')}")
+    c.drawString(100, 640, f"Hora: {consulta.hora.strftime('%H:%M')}")
+    c.drawString(100, 620, f"Motivo: {consulta.motivo}")
+
+    c.save()
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=consulta_{id}.pdf'
+    return response
 
 
 @app.route('/agenda/exportar/excel/<int:id>')
@@ -806,48 +881,17 @@ def exportar_cita_csv(id):
         response.headers['Content-Type'] = 'text/csv; charset=utf-8'
         return response
 
-@app.route('/consultas/exportar/pdf/<int:id>')
-@login_required
-def exportar_consulta_pdf(id):
-    consulta = Visita.query.get_or_404(id)
-    buffer = BytesIO()
-    c = canvas.Canvas(buffer)
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(100, 820, "Nutripy - Clínica de Nutrición")
-    c.setFont("Helvetica", 12)
-    c.drawString(100, 805, "Tel: (021) 123-456 | Email: info@nutripy.com")
-    c.drawString(450, 805, "Logo Nutripy")  # Si tenés imagen, podés usar drawImage
-    c.line(100, 800, 500, 800)
-
-    # Detalle de la consulta
-    c.drawString(100, 780, f"Paciente: {consulta.paciente_nombre}")
-    c.drawString(100, 760, f"Edad: {consulta.edad}")
-    c.drawString(100, 740, f"Sexo: {'Masculino' if consulta.sexo == 'M' else 'Femenino'}")
-    c.drawString(100, 720, f"Doctor: {consulta.doctor_nombre}")
-    c.drawString(100, 700, f"Turno: {consulta.turno}")
-    c.drawString(100, 680, f"Modalidad: {consulta.modalidad}")
-    c.drawString(100, 660, f"Fecha: {consulta.fecha.strftime('%d/%m/%Y')}")
-    c.drawString(100, 640, f"Hora: {consulta.hora.strftime('%H:%M')}")
-    c.drawString(100, 620, f"Motivo: {consulta.motivo}")
-
-    c.save()
-    pdf = buffer.getvalue()
-    buffer.close()
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = f'attachment; filename=consulta_{id}.pdf'
-    return response
-
 @app.route('/consultas/exportar/excel/<int:id>')
 @login_required
 def exportar_consulta_excel(id):
     consulta = Visita.query.get_or_404(id)
 
     encabezado = {
-        "Institución": ["Nutripy - Clínica de Nutrición"],
-        "Contacto": ["Tel: (021) 123-456 | Email: info@nutripy.com"],
-        "Logo": ["Logo Nutripy"]
-    }
+    "Institución": ["Nutripy - Clínica de Nutrición"],
+    "Contacto": ["Tel: (021) 123-456 | Email: info@nutripy.com"],
+    "Logo": [url_for('static', filename='img/logo_nutripy.png')]
+}
+
 
     datos = {
         "Paciente": [consulta.paciente_nombre],

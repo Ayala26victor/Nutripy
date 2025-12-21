@@ -4,19 +4,18 @@
 <!-- Fondo blanco aplicado solo a esta vista -->
 <div class="bg-white py-4 px-3">
 
-  <!-- Encabezado institucional (se imprime también) -->
+  <!-- Encabezado institucional con logo alineado a la derecha y borde verde -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-      <h3 class="fw-bold mb-0">Nutripy</h3>
-      <p class="mb-0">Clínica de Nutrición</p>
+      <h5 class="mb-0 fw-bold">Nutripy - Clínica de Nutrición</h5>
       <small>Tel: (021) 123-456 | Email: info@nutripy.com</small>
     </div>
-    <div>
-      <!-- Logo institucional -->
-      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo Nutripy" height="60">
+    <div class="bg-white p-2 border border-success rounded">
+      <img src="{{ url_for('static', filename='img/logo_nutripy.png') }}" alt="Logo Nutripy" width="100" height="100" class="d-print-inline">
     </div>
   </div>
-  <hr>
+
+  <hr class="border-top border-dark mb-4">
 
   <!-- Título de la ficha -->
   <div class="text-center mb-4">
@@ -51,7 +50,7 @@
         <dd class="col-sm-9">{{ cita.modalidad or '-' }}</dd>
       </dl>
 
-      <!-- Dropdown elegante con íconos y colores (no se imprime) -->
+      <!-- Dropdown de exportar -->
       <div class="dropdown text-center mt-4 no-print">
         <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi bi-download"></i> Exportar cita
@@ -75,9 +74,10 @@
           <li>
             <a class="dropdown-item" href="#" onclick="window.print()">
               <i class="bi bi-printer text-secondary"></i> Imprimir
-             </a>
-        </li>
-      </ul>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

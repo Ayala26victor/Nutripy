@@ -30,21 +30,24 @@
             <td>{{ doctor.cedula if doctor.cedula else '-' }}</td>
             <td>{{ doctor.especialidad if doctor.especialidad else '-' }}</td>
             <td>{{ doctor.telefono if doctor.telefono else '-' }}</td>
- <td class="text-dark">
-  {{ doctor.turno if doctor.turno else '-' }}
-</td>
+            <td class="text-dark">{{ doctor.turno if doctor.turno else '-' }}</td>
             <td>
               <div class="d-flex justify-content-center gap-2">
                 <!-- Editar -->
-                <a href="{{ url_for('editar_doctor', id=doctor.id) }}" class="btn btn-warning btn-sm d-flex align-items-center gap-1">
+                <a href="{{ url_for('editar_doctor', id=doctor.id) }}" 
+                   class="btn btn-warning btn-sm d-flex align-items-center gap-1 px-3">
                   <i class="bi bi-pencil"></i> Editar
                 </a>
                 <!-- Ver -->
-                <a href="{{ url_for('ver_doctor', id=doctor.id) }}" class="btn btn-info btn-sm d-flex align-items-center gap-1">
+                <a href="{{ url_for('ver_doctor', id=doctor.id) }}" 
+                   class="btn btn-info btn-sm d-flex align-items-center gap-1 px-3">
                   <i class="bi bi-eye"></i> Ver
                 </a>
-                <!-- Eliminar -->
-                <a href="#" class="btn btn-danger btn-sm d-flex align-items-center gap-1 btn-eliminar-doctor" data-id="{{ doctor.id }}">
+                <!-- Eliminar (formato unificado con data-action y data-confirm) -->
+                <a href="#"
+                   class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-3 btn-eliminar"
+                   data-action="{{ url_for('eliminar_doctor', id=doctor.id) }}"
+                   data-confirm="¿Seguro que deseas eliminar este doctor?">
                   <i class="bi bi-trash"></i> Eliminar
                 </a>
               </div>
@@ -78,17 +81,8 @@
         }
       }
     });
-
-    // Manejo de eliminar doctor con confirmación
-    $(document).on('click', '.btn-eliminar-doctor', function(e) {
-      e.preventDefault();
-      const id = $(this).data('id');
-      if (confirm('¿Seguro que deseas eliminar este doctor?')) {
-        const action = `{{ url_for('eliminar_doctor', id=0) }}`.replace('0', id);
-        const form = $('<form>', { method: 'POST', action: action }).appendTo('body');
-        form.submit();
-      }
-    });
+    // No hace falta duplicar el handler de eliminar aquí,
+    // porque ya lo tienes global en base.html capturando .btn-eliminar
   });
 </script>
 {% endblock %}

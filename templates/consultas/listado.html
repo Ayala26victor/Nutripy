@@ -39,18 +39,23 @@
             <td>{{ c.fecha.strftime('%d/%m/%Y') }}</td>
             <td>{{ c.hora.strftime('%H:%M') }}</td>
             <td>{{ c.motivo }}</td>
-            <td>
+            <td class="text-nowrap">
               <div class="d-flex justify-content-center gap-2">
                 <!-- Editar -->
-                <a href="{{ url_for('editar_consulta', id=c.id) }}" class="btn btn-warning btn-sm d-flex align-items-center gap-1">
+                <a href="{{ url_for('editar_consulta', id=c.id) }}" 
+                   class="btn btn-warning btn-sm d-flex align-items-center gap-1 px-3">
                   <i class="bi bi-pencil"></i> Editar
                 </a>
                 <!-- Ver -->
-                <a href="{{ url_for('ver_visita', id=c.id) }}" class="btn btn-info btn-sm d-flex align-items-center gap-1">
-                 <i class="bi bi-eye"></i> Ver
+                <a href="{{ url_for('ver_visita', id=c.id) }}" 
+                   class="btn btn-info btn-sm d-flex align-items-center gap-1 px-3">
+                  <i class="bi bi-eye"></i> Ver
                 </a>
-                <!-- Eliminar -->
-                <a href="#" class="btn btn-danger btn-sm d-flex align-items-center gap-1 btn-eliminar-consulta" data-id="{{ c.id }}">
+                <!-- Eliminar (formato unificado con data-action y data-confirm) -->
+                <a href="#"
+                   class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-3 btn-eliminar"
+                   data-action="{{ url_for('eliminar_consulta', id=c.id) }}"
+                   data-confirm="¿Seguro que deseas eliminar esta consulta?">
                   <i class="bi bi-trash"></i> Eliminar
                 </a>
               </div>
@@ -68,7 +73,7 @@
 <script>
   $(function() {
     $('#tabla-consultas').DataTable({
-      order: [[6, 'desc'], [7, 'desc']], // ordena por fecha y hora
+      order: [[6, 'desc'], [7, 'desc']],
       language: {
         search: "Buscar:",
         lengthMenu: "Mostrar _MENU_ registros",
@@ -84,17 +89,8 @@
         }
       }
     });
-
-    // Manejo de eliminar consulta con confirmación
-    $(document).on('click', '.btn-eliminar-consulta', function(e) {
-      e.preventDefault();
-      const id = $(this).data('id');
-      if (confirm('¿Seguro que deseas eliminar esta consulta?')) {
-        const action = `{{ url_for('eliminar_consulta', id=0) }}`.replace('0', id);
-        const form = $('<form>', { method: 'POST', action: action }).appendTo('body');
-        form.submit();
-      }
-    });
+    // No hace falta duplicar el handler de eliminar aquí,
+    // porque ya lo tienes global en base.html capturando .btn-eliminar
   });
 </script>
 {% endblock %}

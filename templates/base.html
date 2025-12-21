@@ -7,87 +7,29 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Bootstrap Icons (para íconos como bi bi-download, bi bi-file-earmark-pdf, etc.) -->
+  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
   <!-- Estilos propios -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 
-  <!-- DataTables CSS con integración Bootstrap -->
+  <!-- DataTables CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-
-    .layout {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      width: 250px;
-      background-color: #17966c;
-      color: white;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sidebar h4 {
-      padding: 20px;
-      margin: 0;
-      background-color: #14885f;
-      text-align: center;
-    }
-
-    .sidebar a {
-      color: white;
-      text-decoration: none;
-      padding: 12px 20px;
-      display: block;
-      transition: background-color 0.3s ease;
-    }
-
-    .sidebar a:hover {
-      background-color: #117a52;
-    }
-
-    .sidebar a.activo {
-      background-color: #006837;
-      font-weight: bold;
-      color: white;
-      border-radius: 4px;
-    }
-
-    .content {
-      flex-grow: 1;
-      padding: 20px;
-      background-color: #f8f9fa;
-    }
-
+    html, body { height: 100%; margin: 0; }
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 250px; background-color: #17966c; color: white; flex-shrink: 0; display: flex; flex-direction: column; }
+    .sidebar h4 { padding: 20px; margin: 0; background-color: #14885f; text-align: center; }
+    .sidebar a { color: white; text-decoration: none; padding: 12px 20px; display: block; transition: background-color 0.3s ease; }
+    .sidebar a:hover { background-color: #117a52; }
+    .sidebar a.activo { background-color: #006837; font-weight: bold; color: white; border-radius: 4px; }
+    .content { flex-grow: 1; padding: 20px; background-color: #f8f9fa; }
     @media print {
-      .sidebar, .navbar, .dropdown, .btn, .footer, header {
-        display: none !important;
-      }
-
-      body * {
-        visibility: hidden;
-      }
-
-      .content, .content * {
-        visibility: visible;
-      }
-
-      .content {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        padding: 0;
-      }
+      .sidebar, .navbar, .dropdown, .btn, .footer, header { display: none !important; }
+      body * { visibility: hidden; }
+      .content, .content * { visibility: visible; }
+      .content { position: absolute; top: 0; left: 0; width: 100%; padding: 0; }
     }
   </style>
 
@@ -128,7 +70,35 @@
     </div>
   </div>
 
-  <!-- Bootstrap JS (necesario para dropdowns, modals, tooltips, etc.) -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Handler global para eliminar con POST + CSRF -->
+  <script>
+    (function() {
+      // Si usas Flask-WTF, csrf_token estará disponible; si no, quedará vacío.
+      const CSRF_TOKEN = "{{ csrf_token() if csrf_token is defined else '' }}";
+
+      $(document).on("click", ".btn-eliminar", function(e) {
+        e.preventDefault();
+        const action = $(this).data("action");       // URL completa del endpoint (data-action)
+        const confirmMsg = $(this).data("confirm") || "¿Seguro que deseas eliminar este registro?";
+        if (!action) return;
+
+        if (confirm(confirmMsg)) {
+          const $form = $('<form>', { method: 'POST', action: action });
+          if (CSRF_TOKEN) {
+            $form.append($('<input>', { type: 'hidden', name: 'csrf_token', value: CSRF_TOKEN }));
+          }
+          $form.appendTo('body').submit();
+        }
+      });
+    })();
+  </script>
+
+  {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -77,6 +77,18 @@
         <input type="text" id="motivo" name="motivo" class="form-control" placeholder="Ej: Consulta, Control, Seguimiento" required>
       </div>
 
+      <!-- Firma Digital Dibujable -->
+      <div class="form-group mb-4">
+        <label>Firma Digital del Profesional</label>
+        <canvas id="signature-pad" class="border rounded" width="400" height="150"></canvas>
+        <input type="hidden" name="firma_img" id="firma_img">
+        <div class="mt-2 d-flex gap-2">
+          <button type="button" class="btn btn-warning btn-sm" onclick="borrarFirma()">🧹 Borrar Firma</button>
+          <!-- Botón de imprimir/exportar firma removido -->
+        </div>
+        <small class="text-muted">Esta firma valida el cierre de la consulta y será registrada junto con los datos del paciente.</small>
+      </div>
+
       <!-- Botones -->
       <div class="d-flex justify-content-center gap-3 mt-4">
         <button type="submit" class="btn btn-success btn-sm w-25">🖫 Guardar</button>
@@ -85,4 +97,25 @@
     </form>
   </div>
 </div>
+
+<!-- Scripts de firma -->
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script>
+  const canvas = document.getElementById("signature-pad");
+  const signaturePad = new SignaturePad(canvas);
+
+  function borrarFirma() {
+    signaturePad.clear();
+  }
+
+  document.querySelector("form").addEventListener("submit", function(e) {
+    if (!signaturePad.isEmpty()) {
+      document.getElementById("firma_img").value = signaturePad.toDataURL();
+    } else {
+      alert("⚠️ Por favor, firme antes de guardar.");
+      e.preventDefault();
+    }
+  });
+</script>
 {% endblock %}
+

@@ -593,4 +593,29 @@ SIDEBAR
     color: white;
     border-radius: 4px;
 }
+.inicio-logo-fondo {
+  background-image: url('/static/img/fondo.png');
+  background-size: cover;         /* ✅ rellena todo el espacio */
+  background-position: center;    /* ✅ centrado visualmente */
+  background-repeat: no-repeat;   /* ✅ sin repeticiones */
+  background-color: white;        /* ✅ fallback si no carga */
+  min-height: 100vh;              /* ✅ ocupa toda la pantalla */
+  position: relative;
+  z-index: 0;
+}
 
+.inicio-logo-fondo {
+  background-image: url('/static/img/fondo.png'); /* usa la imagen que quieras */
+  background-size: cover;         /* estira la imagen para cubrir todo */
+  background-position: center top;/* centrado arriba */
+  background-repeat: no-repeat;   /* evita repeticiones */
+  background-color: white;        /* color de respaldo */
+  min-height: 100vh;              /* ocupa toda la pantalla */
+  position: relative;
+}
+x
+.encabezado-nutripy {
+  background-color: rgba(255, 255, 255, 0.85); /* fondo semitransparente para legibilidad */
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}

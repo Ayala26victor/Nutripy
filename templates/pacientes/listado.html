@@ -3,18 +3,16 @@
 
 {% block content %}
 <div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">Pacientes</h5>
+  <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+    <h5 class="mb-0">📋 Listado de Pacientes</h5>
+    <a href="{{ url_for('nuevo_paciente') }}" class="btn btn-success btn-sm">
+      ➕ Nuevo paciente
+    </a>
   </div>
 
   <div class="card-body">
-    <form class="d-flex mb-3 d-none" method="get">
-      <input class="form-control" name="q" placeholder="Buscar paciente..." value="{{ q }}">
-      <button class="btn btn-primary ms-2">Buscar</button>
-    </form>
-
-    <table id="tabla-pacientes" class="table table-hover">
-      <thead>
+    <table id="tabla-pacientes" class="table table-bordered table-striped table-hover table-sm text-center align-middle">
+      <thead class="table-secondary">
         <tr>
           <th>Cédula</th>
           <th>Nombre</th>
@@ -30,15 +28,18 @@
           <td>{{ p.nombre }}</td>
           <td>{{ p.edad }}</td>
           <td>{{ p.telefono or '-' }}</td>
-          <td>
+          <td class="text-nowrap">
             <div class="d-flex justify-content-center gap-2">
+              <!-- Editar -->
               <a href="{{ url_for('editar_paciente', id=p.id) }}" 
-                 class="btn btn-warning btn-sm d-flex align-items-center gap-1">
+                 class="btn btn-warning btn-sm d-flex align-items-center gap-1 px-3">
                 <i class="bi bi-pencil"></i> Editar
               </a>
-              <a href="#" 
-                 class="btn btn-danger btn-sm d-flex align-items-center gap-1 btn-eliminar" 
-                 data-id="{{ p.id }}">
+              <!-- Eliminar (POST con estilo <a>) -->
+              <a href="#"
+                 class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-3 btn-eliminar"
+                 data-action="{{ url_for('eliminar_paciente', id=p.id) }}"
+                 data-confirm="¿Seguro que deseas eliminar este paciente?">
                 <i class="bi bi-trash"></i> Eliminar
               </a>
             </div>
@@ -54,7 +55,7 @@
 {% block scripts %}
 <script>
   $(function() {
-    // Inicialización de DataTables
+    // DataTables
     $('#tabla-pacientes').DataTable({
       order: [[2, 'desc']],
       language: {
@@ -73,18 +74,27 @@
       }
     });
 
-    // Acción para eliminar con POST dinámico
+    // Token CSRF (si usas Flask-WTF)
+    const CSRF_TOKEN = "{{ csrf_token() if csrf_token is defined else '' }}";
+
+    // Handler global para botones eliminar
     $(document).on("click", ".btn-eliminar", function(e) {
       e.preventDefault();
-      const id = $(this).data("id");
-      if (confirm("¿Seguro que deseas eliminar este paciente?")) {
-        const form = $('<form>', {
-          method: 'POST',
-          action: '/eliminar/' + id
-        });
-        form.appendTo('body').submit();
+      const action = $(this).data("action");
+      const confirmMsg = $(this).data("confirm") || "¿Seguro que deseas eliminar este registro?";
+      if (!action) return;
+
+      if (confirm(confirmMsg)) {
+        const $form = $('<form>', { method: 'POST', action: action });
+        if (CSRF_TOKEN) {
+          $form.append(
+            $('<input>', { type: 'hidden', name: 'csrf_token', value: CSRF_TOKEN })
+          );
+        }
+        $form.appendTo('body').submit();
       }
     });
   });
 </script>
 {% endblock %}
+

@@ -40,13 +40,21 @@
           <td>{{ cita.motivo or '-' }}</td>
           <td>
             <div class="d-flex justify-content-center gap-2">
-              <a href="{{ url_for('editar_cita', id=cita.id) }}" class="btn btn-warning btn-sm d-flex align-items-center gap-1">
+              <!-- Editar -->
+              <a href="{{ url_for('editar_cita', id=cita.id) }}" 
+                 class="btn btn-warning btn-sm d-flex align-items-center gap-1 px-3">
                 <i class="bi bi-pencil"></i> Editar
               </a>
-              <a href="{{ url_for('ver_cita', id=cita.id) }}" class="btn btn-info btn-sm d-flex align-items-center gap-1">
+              <!-- Ver -->
+              <a href="{{ url_for('ver_cita', id=cita.id) }}" 
+                 class="btn btn-info btn-sm d-flex align-items-center gap-1 px-3">
                 <i class="bi bi-eye"></i> Ver
               </a>
-              <a href="#" class="btn btn-danger btn-sm d-flex align-items-center gap-1 btn-eliminar-cita" data-id="{{ cita.id }}">
+              <!-- Eliminar (formato unificado) -->
+              <a href="#"
+                 class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-3 btn-eliminar"
+                 data-action="{{ url_for('eliminar_cita', id=cita.id) }}"
+                 data-confirm="¿Seguro que deseas eliminar esta cita de la agenda?">
                 <i class="bi bi-trash"></i> Eliminar
               </a>
             </div>
@@ -63,7 +71,7 @@
 <script>
   $(function() {
     $('#tabla-agenda').DataTable({
-      order: [[6, 'asc']], // orden por fecha (columna 7 ahora)
+      order: [[6, 'asc']], // orden por fecha
       language: {
         search: "Buscar:",
         lengthMenu: "Mostrar _MENU_ registros",
@@ -79,18 +87,8 @@
         }
       }
     });
-
-    $(document).on("click", ".btn-eliminar-cita", function(e) {
-      e.preventDefault();
-      const id = $(this).data("id");
-      if (confirm("¿Seguro que deseas eliminar esta cita?")) {
-        const form = $('<form>', {
-          method: 'POST',
-          action: '/agenda/eliminar/' + id
-        });
-        form.appendTo('body').submit();
-      }
-    });
+    // No hace falta duplicar el handler de eliminar aquí,
+    // porque ya lo tienes global en base.html capturando .btn-eliminar
   });
 </script>
 {% endblock %}

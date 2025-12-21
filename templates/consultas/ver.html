@@ -20,6 +20,14 @@
       <li class="list-group-item"><strong>Motivo:</strong> {{ consulta.motivo or '-' }}</li>
     </ul>
 
+    <!-- Firma Digital -->
+    {% if consulta.firma_img %}
+    <div class="mt-4 text-center">
+      <h6>Firma Digital del Profesional</h6>
+      <img src="{{ consulta.firma_img }}" alt="Firma digital" style="max-width:400px; border:1px solid #ccc; padding:5px;">
+    </div>
+    {% endif %}
+
     <div class="d-flex justify-content-center gap-3 mt-4">
       <a href="{{ url_for('consultas_listado') }}" class="btn btn-secondary btn-sm">⬅ Volver</a>
     </div>
