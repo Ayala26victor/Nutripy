@@ -2,10 +2,15 @@
 {% block title %}{{ 'Editar Paciente' if paciente else 'Nuevo Paciente' }}{% endblock %}
 
 {% block content %}
+<!-- Encabezado verde institucional centrado -->
+<div class="header-title d-flex justify-content-center align-items-center gap-2 mb-4">
+  <i class="fa fa-user-edit"></i>
+  {{ 'Editar Paciente' if paciente else 'Nuevo Paciente' }}
+</div>
+
+
+<!-- Tarjeta con el formulario -->
 <div class="card">
-  <div class="card-header">
-    <h5 class="mb-0">{{ 'Editar Paciente' if paciente else 'Nuevo Paciente' }}</h5>
-  </div>
   <div class="card-body">
     <form method="post">
       <div class="mb-3">
@@ -43,6 +48,7 @@
         <textarea name="notas" class="form-control" rows="3">{{ paciente.notas if paciente else '' }}</textarea>
       </div>
 
+      <!-- Botones de acción con formato solicitado -->
       <div class="d-flex justify-content-center gap-3 mt-4">
         <button type="submit" class="btn btn-success btn-sm w-25">
           🖫 Guardar

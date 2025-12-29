@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Editar Paciente{% endblock %}
+
+{% block content %}
+<!-- Encabezado verde institucional centrado -->
+<div class="header-title d-flex justify-content-center align-items-center gap-2 mb-4">
+  <i class="fa fa-user-edit"></i>
+  <h4 class="mb-0">Editar Paciente</h4>
+</div>
+
+
+
+<!-- Tarjeta con el formulario -->
+<div class="card">
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('editar_paciente', id=paciente.id) }}">
+      {{ form.hidden_tag() }}
+
+      <div class="mb-3">
+        {{ form.nombre.label(class="form-label") }}
+        {{ form.nombre(class="form-control") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.cedula.label(class="form-label") }}
+        {{ form.cedula(class="form-control") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.telefono.label(class="form-label") }}
+        {{ form.telefono(class="form-control") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.edad.label(class="form-label") }}
+        {{ form.edad(class="form-control") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.sexo.label(class="form-label") }}
+        {{ form.sexo(class="form-control") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.notas.label(class="form-label") }}
+        {{ form.notas(class="form-control") }}
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="d-flex justify-content-center gap-2 mt-4">
+        <button type="submit" class="btn btn-nutripy btn-sm d-flex align-items-center gap-1 px-3">
+          <i class="bi bi-check-circle"></i> Guardar
+        </button>
+        <a href="{{ url_for('pacientes_listado') }}" 
+           class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-3">
+          <i class="bi bi-x-circle"></i> Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
